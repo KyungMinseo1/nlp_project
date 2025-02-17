@@ -17,6 +17,7 @@ def main():
     else:
         nlp.process_json()
         nlp.process_csv() 
+print()
 
 if __name__ == "__main__":
     main()
