@@ -1,9 +1,25 @@
 from .nbq import nlp_before_qg
+import os
+import csv
+import json
 
 class Processor:
     def __init__(self, df):
         self.df = df
         self.nbq = None
+        
+    def file_maker(self, path, data, format):
+        if os.path.exists(path):
+            user_input = input(f"File {path} already exists. Overwrite? (y/n): ").lower()
+            if user_input != 'y':
+                print(f"Skipping {path}")
+                return
+        if format == "json":        
+            data.to_json(path, orient='records', force_ascii=False, indent=4)
+            print(f"Final JSON results saved to: {path}")
+        if format == "csv":
+            data.to_csv(path, encoding = 'utf-8')
+            print(f"Final CSV results saved to: {path}")
 
     def process_json(self):
         '''
@@ -17,10 +33,13 @@ class Processor:
             nbq.summary_sentence()
             nbq.context_split()
             nbq.keybert()
+            self.nbq = nbq
             new_df = nbq.merge_to_df()
         else:
             new_df = self.nbq.merge_to_df()
-        return new_df.to_json(orient='records', force_ascii=False, indent=4)
+        final_path_json = os.path.join(os.path.dirname(__file__), '..', '..', 'output', 'final.json')    
+        self.file_maker(final_path_json, new_df, 'json')
+        
     
     def process_csv(self):
         '''
@@ -34,7 +53,9 @@ class Processor:
             nbq.summary_sentence()
             nbq.context_split()
             nbq.keybert()
+            self.nbq = nbq
             new_df = nbq.merge_to_df()
         else:
             new_df = self.nbq.merge_to_df()
-        return new_df.to_csv(encoding = "utf-8")
+        final_path_csv = os.path.join(os.path.dirname(__file__), '..', '..', 'output', 'final.csv')
+        self.file_maker(final_path_csv, new_df, 'csv')

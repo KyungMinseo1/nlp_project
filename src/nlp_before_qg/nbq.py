@@ -134,10 +134,7 @@ class nlp_before_qg:
       dissimilarity = nsp_score
       for adverb in transition_adverbs:
         if adverb in sent2:
-          if dissimilarity < 0.75:
-            dissimilarity += 0.1
-        elif dissimilarity < 0.85:  # 너무 높은 경우는 영향 적게 함
-          dissimilarity += 0.05
+          dissimilarity += 0.1
       return dissimilarity
 
     nsp_scores = [calculate_weighted_similarity(sentences[i], sentences[i+1]) for i in range(len(sentences)-1)]
@@ -146,10 +143,9 @@ class nlp_before_qg:
     plt.xlabel('NSP Score')
     plt.ylabel('Frequency')
     plt.show()
-    Q1 = np.percentile(nsp_scores, 25)
-    Q3 = np.percentile(nsp_scores, 75)
-    IQR = Q3 - Q1
-    threshold = Q3 + IQR
+    mean = np.mean(nsp_scores)
+    std = np.std(nsp_scores)
+    threshold = mean + std
     change_points = [i for i, score in enumerate(nsp_scores) if score > threshold]
     con_split = []
     start = 0
@@ -172,9 +168,15 @@ class nlp_before_qg:
       keywords_idx = [np.argmax(word_doc_similarity)]
       candidates_idx = [i for i in range(len(words)) if i != keywords_idx[0]]
       for _ in range(top_n - 1):
+        if not candidates_idx:  # 후보가 없다면
+            print("No more candidates left!")
+            break
         candidate_similarities = word_doc_similarity[candidates_idx, :]
         target_similarities = np.max(word_similarity[candidates_idx][:, keywords_idx], axis=1)
         mmr = (1 - diversity) * candidate_similarities - diversity * target_similarities.reshape(-1, 1)
+        if mmr.size == 0:  # mmr이 비어 있다면
+            print("MMR array is empty!")
+            break
         mmr_idx = candidates_idx[np.argmax(mmr)]
         keywords_idx.append(mmr_idx)
         candidates_idx.remove(mmr_idx)
