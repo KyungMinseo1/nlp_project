@@ -169,14 +169,14 @@ class nlp_before_qg:
       candidates_idx = [i for i in range(len(words)) if i != keywords_idx[0]]
       for _ in range(top_n - 1):
         if not candidates_idx:  # 후보가 없다면
-            print("No more candidates left!")
-            break
+          print("No more candidates left!")
+          break
         candidate_similarities = word_doc_similarity[candidates_idx, :]
         target_similarities = np.max(word_similarity[candidates_idx][:, keywords_idx], axis=1)
         mmr = (1 - diversity) * candidate_similarities - diversity * target_similarities.reshape(-1, 1)
         if mmr.size == 0:  # mmr이 비어 있다면
-            print("MMR array is empty!")
-            break
+          print("MMR array is empty!")
+          break
         mmr_idx = candidates_idx[np.argmax(mmr)]
         keywords_idx.append(mmr_idx)
         candidates_idx.remove(mmr_idx)
