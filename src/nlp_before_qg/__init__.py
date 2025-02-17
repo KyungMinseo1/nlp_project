@@ -23,7 +23,7 @@ class Processor:
 
     def process_json(self):
         '''
-        입력 받은 데이터프레임을 처리 후 json 파일 형식으로 반환
+        입력 받은 데이터프레임을 처리 후, json 파일 형식으로 반환
         '''
         if not self.nbq:
             nbq = nlp_before_qg(self.df)
@@ -43,7 +43,7 @@ class Processor:
     
     def process_csv(self):
         '''
-        입력 받은 데이터프레임을 처리 후 csv 파일 형식으로 반환
+        입력 받은 데이터프레임을 처리 후, csv 파일 형식으로 반환
         '''
         if not self.nbq:
             nbq = nlp_before_qg(self.df)
