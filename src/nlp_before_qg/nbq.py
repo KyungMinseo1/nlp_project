@@ -4,14 +4,12 @@ import re
 import numpy as np
 import pandas as pd
 from keybert import KeyBERT
-from transformers import BertTokenizer, BertModel, BertForNextSentencePrediction
+from transformers import BertTokenizer, BertModel, BertForNextSentencePrediction, pipeline, AutoTokenizer
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 from konlpy.tag import Okt
 import torch
 import kss
-from transformers import pipeline
-from transformers import AutoTokenizer
 import matplotlib.pyplot as plt
 
 import warnings
