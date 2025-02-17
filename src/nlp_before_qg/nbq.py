@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 import warnings
 warnings.filterwarnings("ignore")
 
-data_path = os.path.join(os.path.dirname(__file__), '..', 'docs', 'stopwords-ko.txt')
+data_path = os.path.join(os.path.dirname(__file__), '..', '..', 'docs', 'stopwords-ko.txt')
 with open(data_path, 'r', encoding='utf-8') as f:
     stop_words = set(f.read().split())
 stop_words = stop_words.union(set(['을', '를', '이', '가', '은', '는', 'null', '과', '의', '그', '도', '와', '에서', '에게', '의해서', '이다', '들']))
