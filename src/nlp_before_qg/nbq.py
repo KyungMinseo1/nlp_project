@@ -92,7 +92,7 @@ class nlp_before_qg:
     (hanspell을 사용하되 hanspell 라이브러리를 적당히 수정해줘야함(현재 불가))
     '''
     text = self.text_list
-    device_t = 0 if device == "cuda" else -1
+    device_t = 0 if device.type == "cuda" else -1
     model_name = "psyche/KoT5-summarization"
     summarizer = pipeline("summarization", model = model_name, device = device_t)
     tokenizer = AutoTokenizer.from_pretrained("psyche/KoT5-summarization")
