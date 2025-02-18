@@ -1,7 +1,5 @@
 from .nbq import nlp_before_qg
 import os
-import csv
-import json
 
 class Processor:
     def __init__(self, df):

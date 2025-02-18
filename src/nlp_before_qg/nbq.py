@@ -28,7 +28,7 @@ class nlp_before_qg:
     cv에서 처리한 데이터프레임과 문제 생성을 원하는 페이지 번호 입력
     ex) 1-4 형태로 페이지 번호 입력
     '''
-    page_num = str(input("원하는 페이지 번호 입력(ex: 5 혹은 1-4 혹은 all) "))
+    page_num = str(input("원하는 페이지 번호 입력(ex: 5 혹은 1-4 혹은 all): "))
     self.cv_df = cv_df
     self.page_num = page_num
     self.raw_text = None
