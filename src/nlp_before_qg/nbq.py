@@ -1,3 +1,6 @@
+import warnings
+warnings.filterwarnings("ignore")
+
 import os
 from tqdm import tqdm
 import re
@@ -11,9 +14,6 @@ from konlpy.tag import Okt
 import torch
 import kss
 import matplotlib.pyplot as plt
-
-import warnings
-warnings.filterwarnings("ignore")
 
 data_path = os.path.join(os.path.dirname(__file__), '..', '..', 'docs', 'stopwords-ko.txt')
 with open(data_path, 'r', encoding='utf-8') as f:
@@ -112,9 +112,9 @@ class nlp_before_qg:
     '''
     sentences = self.text_summary
 
-    model_name = "monologg/kobert"
-    tokenizer = BertTokenizer.from_pretrained(model_name)
-    model = BertForNextSentencePrediction.from_pretrained(model_name)
+    model_path = os.path.join(os.path.dirname(__file__), '..', '..', 'docs', './kobert_nsp_finetuned')
+    tokenizer = BertTokenizer.from_pretrained(model_path)
+    model = BertForNextSentencePrediction.from_pretrained(model_path)
     model.eval()
 
     transition_adverbs = ["그러나", "하지만", "반면", "반대로", "달리", "불구하고"]
