@@ -91,7 +91,7 @@ class nlp_before_qg:
     '''
     text = self.text_list
     model_name = "psyche/KoT5-summarization"
-    summarizer = pipeline("summarization", model = model_name, device=-1)
+    summarizer = pipeline("summarization", model = model_name)
     tokenizer = AutoTokenizer.from_pretrained("psyche/KoT5-summarization")
     summary_list = []
     for t in tqdm(text, desc="요약 실행", unit="sentences"):
@@ -112,7 +112,7 @@ class nlp_before_qg:
     '''
     sentences = self.text_summary
 
-    model_path = os.path.join(os.path.dirname(__file__), '..', '..', 'docs', './kobert_nsp_finetuned')
+    model_path = os.path.join(os.path.dirname(__file__), '..', '..', 'docs', 'kobert_nsp_finetuned')
     tokenizer = BertTokenizer.from_pretrained(model_path)
     model = BertForNextSentencePrediction.from_pretrained(model_path)
     model.eval()
@@ -141,9 +141,10 @@ class nlp_before_qg:
     plt.xlabel('NSP Score')
     plt.ylabel('Frequency')
     plt.show()
-    mean = np.mean(nsp_scores)
-    std = np.std(nsp_scores)
-    threshold = mean + std
+    Q1 = np.quantile(nsp_scores, 0.25)
+    Q3 = np.quantile(nsp_scores, 0.75)
+    IQR = Q3-Q1
+    threshold = Q3 + 1.5 * IQR
     change_points = [i for i, score in enumerate(nsp_scores) if score > threshold]
     con_split = []
     start = 0
@@ -180,7 +181,7 @@ class nlp_before_qg:
         candidates_idx.remove(mmr_idx)
       return [words[idx] for idx in keywords_idx]
 
-    embedding_model = SentenceTransformer('sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2', device="cpu")
+    embedding_model = SentenceTransformer('sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2')
     kw_model = KeyBERT(embedding_model)
     final = []
     for text in tqdm(con_split, desc="키워드 추출", unit="contexts"):
