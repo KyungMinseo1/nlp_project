@@ -125,6 +125,7 @@ class nlp_before_qg:
 
     def get_nsp_score(sent1, sent2):
       tokens = tokenizer(sent1, sent2, return_tensors="pt", padding=True, truncation=True, max_length=128)
+      tokens = {key: value.to(device) for key, value in tokens.items()}  # tokens의 텐서들을 device로 이동
       with torch.no_grad():
           outputs = model(**tokens)
       logits = outputs.logits
