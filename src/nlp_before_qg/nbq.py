@@ -20,6 +20,8 @@ with open(data_path, 'r', encoding='utf-8') as f:
     stop_words = set(f.read().split())
 stop_words = stop_words.union(set(['을', '를', '이', '가', '은', '는', 'null', '과', '의', '그', '도', '와', '에서', '에게', '의해서', '이다', '들']))
 
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
 class nlp_before_qg:
   def __init__(self, cv_df):
     '''
@@ -90,8 +92,9 @@ class nlp_before_qg:
     (hanspell을 사용하되 hanspell 라이브러리를 적당히 수정해줘야함(현재 불가))
     '''
     text = self.text_list
+    device_t = 0 if device == "cuda" else -1
     model_name = "psyche/KoT5-summarization"
-    summarizer = pipeline("summarization", model = model_name)
+    summarizer = pipeline("summarization", model = model_name, device = device_t)
     tokenizer = AutoTokenizer.from_pretrained("psyche/KoT5-summarization")
     summary_list = []
     for t in tqdm(text, desc="요약 실행", unit="sentences"):
@@ -115,6 +118,7 @@ class nlp_before_qg:
     model_path = os.path.join(os.path.dirname(__file__), '..', '..', 'docs', 'kobert_nsp_finetuned')
     tokenizer = BertTokenizer.from_pretrained(model_path)
     model = BertForNextSentencePrediction.from_pretrained(model_path)
+    model = model.to(device)
     model.eval()
 
     transition_adverbs = ["그러나", "하지만", "반면", "반대로", "달리", "불구하고"]
@@ -181,7 +185,7 @@ class nlp_before_qg:
         candidates_idx.remove(mmr_idx)
       return [words[idx] for idx in keywords_idx]
 
-    embedding_model = SentenceTransformer('sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2')
+    embedding_model = SentenceTransformer('sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2', device = device)
     kw_model = KeyBERT(embedding_model)
     final = []
     for text in tqdm(con_split, desc="키워드 추출", unit="contexts"):
